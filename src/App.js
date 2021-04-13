@@ -8,18 +8,24 @@ class App extends React.Component{
   constructor(){
     super();
     this.state = {
-      lista: [
-        { 
-          testo: "Rubare i soldi a Benito", 
-          completato: true
-        },
-        { 
-          testo: "Comprare VPN", 
-          completato: false
-        }
-      ]
+      ordinata: false,
+      lista: []
     }
   }
+
+  componentDidMount(){
+    let stato = window.localStorage.getItem('stato')
+    if(stato){
+      stato = JSON.parse(stato)
+      this.setState(stato)
+    }
+    
+  }
+
+  componentDidUpdate(){
+    window.localStorage.setItem('stato', JSON.stringify(this.stato))
+  }
+
 
   segnaCompletato = (indice)=>{
     const nuovaLista = [...this.state.lista]
@@ -54,26 +60,39 @@ class App extends React.Component{
     }
     return l
   }
-  render() {
 
+  setordinata = (e)=>{
+    this.setState({
+      ordinata: !this.state.ordinata
+    })
+  }
+  render() {
+    const lista = this.state.lista.map(
+      (elemento, indice)=><TodoItem 
+                            key={indice} 
+                            indice={indice} 
+                            completa={this.segnaCompletato}
+                            compitoElimina={this.elimina}
+                            elemento={elemento}></TodoItem>
+    );
     return (
       <div className="App">
         <h1>Lista delle cose da fare {
           this.state.lista.length ? "(" + this.state.lista.length + ")" : ""
           }</h1>
         <CreateTodo azione={this.aggiungiCompito}></CreateTodo>
-        <ol>
-          {
-            this.state.lista.map(
-              (elemento, indice)=><TodoItem 
-                                    key={indice} 
-                                    indice={indice} 
-                                    completa={this.segnaCompletato}
-                                    compitoElimina={this.elimina}
-                                    elemento={elemento}></TodoItem>
-            )
-          }
-        </ol>
+        <p>Completati: {this.state.lista.filter((e)=>e.completato).length}</p>
+        <p>Da completare: {this.state.lista.filter((e)=>!e.completato).length}</p>
+        <label htmlFor="ordinata">
+          <input type="checkbox" 
+              onChange={this.setordinata} 
+              name="ordinata" 
+              id="ordinata" 
+              value={this.state.ordinata}/>
+          Lista ordinata
+        </label>
+        
+        { this.state.ordinata? (<ol>{lista}</ol>):(<ul>{lista}</ul>) }
       </div>
     );
   }
