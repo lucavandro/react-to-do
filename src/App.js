@@ -14,16 +14,15 @@ class App extends React.Component{
   }
 
   componentDidMount(){
-    let stato = window.localStorage.getItem('stato')
-    if(stato){
-      stato = JSON.parse(stato)
-      this.setState(stato)
-    }
-    
+    let stato = localStorage.getItem('stato')
+    if(stato !== 'undefined'){
+      this.setState(JSON.parse(stato))
+    }    
   }
 
   componentDidUpdate(){
-    window.localStorage.setItem('stato', JSON.stringify(this.stato))
+    if(this.state)
+     localStorage.setItem('stato', JSON.stringify(this.state))
   }
 
 
