@@ -87,7 +87,7 @@ class App extends React.Component{
               onChange={this.setordinata} 
               name="ordinata" 
               id="ordinata" 
-              value={this.state.ordinata}/>
+              checked={this.state.ordinata}/>
           Lista ordinata
         </label>
         
